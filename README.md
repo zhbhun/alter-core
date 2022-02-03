@@ -49,14 +49,13 @@ Please star us ⭐⭐⭐ on GitHub—it motivates us a lot!
 
 ### ✨ Features
 - `42` tracked facial expressions via blendshapes
+- Light & fast, just `3MB` ML model size
 - Eye tracking including eye gaze vector
 - Tongue tracking
-- Light & fast, just `3MB` ML model size
 - `≤ ±50°` pitch, `≤ ±40°` yaw and `≤ ±30°` roll tracking coverage
 - [3D reprojection to input photo/video](https://studio.facemoji.co/docs/Re-projecting-3D-Faces-for-Augmented-Reality_a2d9e35a-3d9a-4fd1-b58a-51db06139d4d)
 - Platform-suited API and packaging with internal optimizations
 - Simultaneous back and front camera support
-- Light & fast, just `3MB` ML model size
 
 ### 🤳 Input
 
