@@ -12,13 +12,13 @@ let package = Package(
     products: [
         .library(
             name: "alter-core",
-            targets: ["alter-core"]),
+            targets: ["AlterCore"]),
     ],
     dependencies: [
     ],
     targets: [
         .binaryTarget(
-                    name: "alter-core",
+                    name: "AlterCore",
                     path: "frameworks/AlterCore.xcframework"
                 )
     ]
