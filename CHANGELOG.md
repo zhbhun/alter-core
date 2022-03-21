@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.11.0 - 2022-03-21
+### Added
+- Protocol-buffers-based face tracker result serialization
+- Replaces deprecated functions FaceTrackerResult.serialize() and deserializeResult()
+
+### Fixed
+- Memory leaks when loading multiple avatars
+- Stuttering on iOS
+- Screenshot not working on Javascript
+- FallbackAvatarController not transitioning smoothly between primary and fallback phase
+- Swift package manager not working with Xcode 13.3
+- Avatar loading getting stuck on older iOS devices
+
 ## 0.10.0 - 2022-02-01
 ### Added
 - New classes for accessing camera on iOS and Javascript
