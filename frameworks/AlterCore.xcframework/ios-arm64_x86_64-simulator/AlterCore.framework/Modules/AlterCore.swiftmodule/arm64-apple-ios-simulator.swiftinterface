@@ -2306,8 +2306,8 @@ public protocol AvatarDesignerLogic {
   public func updateConfiguration(_ config: AlterCore.DesignerConfigurationDefinition, _ selections: [Swift.String : [AlterCore.ItemSelectionDefinition]]) -> AlterCore.DesignerConfigurationDefinition
   public func configurationToAvatarMatrix(_ config: AlterCore.DesignerConfigurationDefinition) -> AlterCore.AvatarMatrix
   public func avatarMatrixToConfiguration(_ avatarMatrix: AlterCore.AvatarMatrix) -> AlterCore.DesignerConfigurationDefinition
-  public func create(_ avatarFactory: AlterCore.AvatarFactory, _ logicConfigFileSystem: AlterCore.FileSystem? = nil, _ configFilePath: Swift.String = "jsons/designerlogic/logic_configuration.json", _ localeCode: Swift.String = "en-US", _ thumbnailSuffixAndExtension: Swift.String = ".png", _ warnOnMissingReferences: Swift.Bool = true) -> AlterCore.Future<AlterCore.Try<AlterCore.ConfigurableAvatarDesignerLogic>>
-  public static func create(_ dataFileSystem: AlterCore.FileSystem, _ logicConfigFileSystem: AlterCore.FileSystem? = nil, _ configFilePath: Swift.String = "jsons/designerlogic/logic_configuration.json", _ localeCode: Swift.String = "en-US", _ thumbnailSuffixAndExtension: Swift.String = ".png", _ warnOnMissingReferences: Swift.Bool = true) -> AlterCore.Future<AlterCore.Try<AlterCore.ConfigurableAvatarDesignerLogic>>
+  public func create(_ avatarFactory: AlterCore.AvatarFactory, _ logicConfigFileSystem: AlterCore.FileSystem? = nil, _ configFilePath: Swift.String = "jsons/designerlogic/logic_configuration.json", _ localeCode: Swift.String = "en-US", _ thumbnailSuffixAndExtension: Swift.String = ".png", _ warnOnIncompleteData: Swift.Bool = true) -> AlterCore.Future<AlterCore.Try<AlterCore.ConfigurableAvatarDesignerLogic>>
+  public static func create(_ dataFileSystem: AlterCore.FileSystem, _ logicConfigFileSystem: AlterCore.FileSystem? = nil, _ configFilePath: Swift.String = "jsons/designerlogic/logic_configuration.json", _ localeCode: Swift.String = "en-US", _ thumbnailSuffixAndExtension: Swift.String = ".png", _ warnOnIncompleteData: Swift.Bool = true) -> AlterCore.Future<AlterCore.Try<AlterCore.ConfigurableAvatarDesignerLogic>>
   public static func == (lhs: AlterCore.ConfigurableAvatarDesignerLogic, rhs: AlterCore.ConfigurableAvatarDesignerLogic) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
@@ -2514,8 +2514,11 @@ public protocol AvatarController {
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
   public func asKotlin() -> Swift.AnyObject
   @objc deinit
-  public convenience init(_ items: [AlterCore.ItemMetadataDefinition], _ maxSelections: Swift.Int, _ mandatorySelection: Swift.Bool)
+  public convenience init(_ items: [AlterCore.ItemMetadataDefinition], _ itemNamesToIndices: [Swift.String : Swift.Int], _ maxSelections: Swift.Int, _ mandatorySelection: Swift.Bool)
   public var items: [AlterCore.ItemMetadataDefinition] {
+    get
+  }
+  public var itemNamesToIndices: [Swift.String : Swift.Int] {
     get
   }
   public var maxSelections: Swift.Int {
@@ -2527,9 +2530,10 @@ public protocol AvatarController {
   public func isEqual(_ other: Any?) -> Swift.Bool
   public func hash() -> Swift.UInt
   public func component1() -> [AlterCore.ItemMetadataDefinition]
-  public func component2() -> Swift.Int
-  public func component3() -> Swift.Bool
-  public func doCopy(_ items: [AlterCore.ItemMetadataDefinition], _ maxSelections: Swift.Int, _ mandatorySelection: Swift.Bool) -> AlterCore.SectionConfigurationDefinition
+  public func component2() -> [Swift.String : Swift.Int]
+  public func component3() -> Swift.Int
+  public func component4() -> Swift.Bool
+  public func doCopy(_ items: [AlterCore.ItemMetadataDefinition], _ itemNamesToIndices: [Swift.String : Swift.Int], _ maxSelections: Swift.Int, _ mandatorySelection: Swift.Bool) -> AlterCore.SectionConfigurationDefinition
   public static func serializer<TKotlinx_serialization_coreKSerializer>() -> TKotlinx_serialization_coreKSerializer where TKotlinx_serialization_coreKSerializer : AlterCore.Kotlinx_serialization_coreKSerializer, TKotlinx_serialization_coreKSerializer.T == AlterCore.SectionConfigurationDefinition
   public static func == (lhs: AlterCore.SectionConfigurationDefinition, rhs: AlterCore.SectionConfigurationDefinition) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
@@ -2790,11 +2794,14 @@ public protocol AvatarController {
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
   public func asKotlin() -> Swift.AnyObject
   @objc deinit
-  public convenience init(_ palette: AlterCore.PaletteDefinition, _ propertiesToPaletteValues: [Swift.String : Swift.String], _ limitedToMaterialPicks: [Swift.String : Swift.String]?)
+  public convenience init(_ palette: AlterCore.PaletteDefinition, _ propertiesToPaletteValues: [Swift.String : Swift.String], _ paletteValuesToProperties: [Swift.String : [Swift.String]], _ limitedToMaterialPicks: [Swift.String : Swift.String]?)
   public var palette: AlterCore.PaletteDefinition {
     get
   }
   public var propertiesToPaletteValues: [Swift.String : Swift.String] {
+    get
+  }
+  public var paletteValuesToProperties: [Swift.String : [Swift.String]] {
     get
   }
   public var limitedToMaterialPicks: [Swift.String : Swift.String]? {
@@ -2804,8 +2811,9 @@ public protocol AvatarController {
   public func hash() -> Swift.UInt
   public func component1() -> AlterCore.PaletteDefinition
   public func component2() -> [Swift.String : Swift.String]
-  public func component3() -> [Swift.String : Swift.String]?
-  public func doCopy(_ palette: AlterCore.PaletteDefinition, _ propertiesToPaletteValues: [Swift.String : Swift.String], _ limitedToMaterialPicks: [Swift.String : Swift.String]?) -> AlterCore.ColourPickerMetadataDefinition
+  public func component3() -> [Swift.String : [Swift.String]]
+  public func component4() -> [Swift.String : Swift.String]?
+  public func doCopy(_ palette: AlterCore.PaletteDefinition, _ propertiesToPaletteValues: [Swift.String : Swift.String], _ paletteValuesToProperties: [Swift.String : [Swift.String]], _ limitedToMaterialPicks: [Swift.String : Swift.String]?) -> AlterCore.ColourPickerMetadataDefinition
   public static func serializer<TKotlinx_serialization_coreKSerializer>() -> TKotlinx_serialization_coreKSerializer where TKotlinx_serialization_coreKSerializer : AlterCore.Kotlinx_serialization_coreKSerializer, TKotlinx_serialization_coreKSerializer.T == AlterCore.ColourPickerMetadataDefinition
   public static func == (lhs: AlterCore.ColourPickerMetadataDefinition, rhs: AlterCore.ColourPickerMetadataDefinition) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)

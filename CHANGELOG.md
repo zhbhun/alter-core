@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.12.0 - 2022-03-22
+### Fixed
+- Fixed a regression from 0.11.0 that caused a crash in video recording on iOS
+
 ## 0.11.0 - 2022-03-21
 ### Added
 - Protocol-buffers-based face tracker result serialization
