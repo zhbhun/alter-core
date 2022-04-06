@@ -170,8 +170,13 @@ class CameraTracker {
 
         // Serialize/deserialize tracking result for e.g. sending over WebRTC, use TrackerResultAvatarController for that
         // if (this.lastResult) {
+        //     // send this over network or save to file
+        //     // DON'T FORGET to send this.serializer.serializationFormat as well, it's necessary for deserializer instantiation
         //     const serialized = this.serializer.serialize(this.lastResult)
+
+        //     // see deserializer creation above, serializationFormat is required
         //     const deserialized = this.deserializer.deserialize(serialized)
+
         //     const result = deserialized.trackerResult
         //     console.log(result)
         // }
