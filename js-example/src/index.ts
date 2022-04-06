@@ -44,7 +44,7 @@ function createAvatar() {
 
     // Create factory for downloading and creating avatars. Do not forget to get your avatar data key at https://studio.alter.xyz
     // You might want to handle errors more gracefully in your app. We just fail with an error here, as this demo makes little sense without avatars!
-    const avatarFactory = AvatarFactory.create(avatarDataUrlFromKey('feg6ioedmc7va33sjidrjtkf7zt7r7hqowhfevdundgs7uchk52kqyi'), canvas).orThrow
+    const avatarFactory = AvatarFactory.create(avatarDataUrlFromKey('YOUR-API-KEY-HERE'), canvas).orThrow
 
     // Wrap a HTML canvas with an AvatarView that handles all avatar rendering and interaction
     const avatarView = new AvatarView(canvas)
