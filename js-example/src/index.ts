@@ -20,9 +20,10 @@ import {
     Future,
     Try,
     TrackerImage,
-    deserializeResult,
     FallbackAvatarController,
     CameraWrapper,
+    FaceTrackerResultSerializer,
+    FaceTrackerResultDeserializer,
 } from '@0xalter/alter-core'
 
 Logger.logLevel = LogLevel.Debug
@@ -43,7 +44,7 @@ function createAvatar() {
 
     // Create factory for downloading and creating avatars. Do not forget to get your avatar data key at https://studio.alter.xyz
     // You might want to handle errors more gracefully in your app. We just fail with an error here, as this demo makes little sense without avatars!
-    const avatarFactory = AvatarFactory.create(avatarDataUrlFromKey('YOUR-API-KEY-HERE'), canvas).orThrow
+    const avatarFactory = AvatarFactory.create(avatarDataUrlFromKey('feg6ioedmc7va33sjidrjtkf7zt7r7hqowhfevdundgs7uchk52kqyi'), canvas).orThrow
 
     // Wrap a HTML canvas with an AvatarView that handles all avatar rendering and interaction
     const avatarView = new AvatarView(canvas)
@@ -137,6 +138,10 @@ class IdleAnimationAvatarController implements AvatarController {
  * Handles interaction with webcamera and sends facial expressions to the avatar
  */
 class CameraTracker {
+    // uncomment for de/serialization example bellow
+    // private serializer = FaceTrackerResultSerializer.create()
+    // private deserializer = FaceTrackerResultDeserializer.create(this.serializer.serializationFormat)
+
     static create(avatarFactory: AvatarFactory): Future<Try<CameraTracker>> {
         const cameraWrapper = new CameraWrapper(videoElement)
         return FaceTracker.createVideoTracker(avatarFactory.bundledFileSystem).mapTry((tracker) => new CameraTracker(cameraWrapper, tracker))
@@ -164,8 +169,12 @@ class CameraTracker {
         }
 
         // Serialize/deserialize tracking result for e.g. sending over WebRTC, use TrackerResultAvatarController for that
-        // const serialized = this.lastResult?.serialize()
-        // const deserialized = serialized ? deserializeResult(serialized).first : undefined
+        // if (this.lastResult) {
+        //     const serialized = this.serializer.serialize(this.lastResult)
+        //     const deserialized = this.deserializer.deserialize(serialized)
+        //     const result = deserialized.trackerResult
+        //     console.log(result)
+        // }
     }
 
     public get avatarController() {
