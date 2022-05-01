@@ -7,7 +7,7 @@ canvas {
     height: 100vh;
 }
 
-#message {
+.message {
     font-size: 1rem;
     line-height: 1.337rem;
     -webkit-font-smoothing: antialiased;
@@ -24,8 +24,10 @@ canvas {
     text-align: center;
 }
 
-.cameraDetection {
+#trackingMessage {
+    top: calc(7% + 1.337rem);
     color: red;
+    font-weight: bold;
 }
 
 .spinner {
