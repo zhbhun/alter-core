@@ -127,13 +127,13 @@ repositories {
 
 // ...
 dependencies {
-    implementation "alter:alter-core:0.12.0"
+    implementation "alter:alter-core:0.13.0"
 }
 ```
 
 ## Browser/Javascript
 
-To run the example, go to the js-example project and use `npm install` and `npm run dev` commands.
+To run one of the provided examples, go to the js-example project and use `npm install` and `npm run {exampleName}` (e.g. `npm run renderAvatar` or `npm run deSerialization`). See `package.json` for list of all examples.
 
 Do not forget to get your API key at [studio.alter.xyz](https://studio.alter.xyz) and paste it into the code. Look for "YOUR-API-KEY-HERE".
 
@@ -141,7 +141,7 @@ Do not forget to get your API key at [studio.alter.xyz](https://studio.alter.xyz
 
 Install the dependency via `npm` or `yarn` command.
 ```
-npm install @0xalter/alter-core@0.12.0
+npm install @0xalter/alter-core@0.13.0
 ```
 
 If you are using a bundler (such as Webpack), make sure to copy the assets from `@0xalter/alter-core` to your serving directory.

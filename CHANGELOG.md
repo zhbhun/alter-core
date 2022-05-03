@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.13.0 - 2022-05-03
+### Added
+- SerializingTrackerAvatarController and DeserializingTrackerAvatarController to support a simple integration of the face tracker result serialization
+- Optional avatar data versioning to `avatarDataUrlFromKey`
+- Added APIs for creating custom avatar designers (`AvatarLogic` and `ConfigurableAvatarLogic`)
+
+### Fixed
+- Updated face tracker result serialization to work around a Protocol buffers serializer bug, previous serialization version is deprecated and will become unsupported in time
+- Overload resolution bugs on Javascript
+- Memory leaks and excessive memory usage, especially on iOS
+
 ## 0.12.0 - 2022-03-22
 ### Fixed
 - Fixed a regression from 0.11.0 that caused a crash in video recording on iOS

@@ -1,6 +1,6 @@
 #include <fragment.defines>
 
-#ifdef INST_COLOUR
+#ifdef INST_COLOR
 #include <blendingFunctionsHalf.metal>
 #endif
 
@@ -30,8 +30,8 @@ float3x3 getTBN(float3 pos, float2 texCoord, float3 normal) {
 
 
 struct FragmentUniforms {
-    #ifndef COLOUR_TEXTURE
-        float4 colour;
+    #ifndef COLOR_TEXTURE
+        float4 color;
     #endif
     #ifndef ROUGHNESS_TEXTURE
         float roughness;
@@ -49,21 +49,21 @@ struct FragmentUniforms {
         float mipLevels;
     #endif
     float3 lightViewPos;
-    float4 lightColour;
-    float4 ambientColour;
+    float4 lightColor;
+    float4 ambientColor;
 };
 
 struct FragmentOut {
-    half4 fragmentColour [[ color(0) ]];
+    half4 fragmentColor [[ color(0) ]];
 };
 
 fragment FragmentOut fragmentMain(
     Interpolate interpolate [[ stage_in ]],
     constant FragmentUniforms& uniforms [[ buffer(0) ]]
 
-    #ifdef COLOUR_TEXTURE
-        ,texture2d<half> colourTexture,
-        sampler colourTextureSampler
+    #ifdef COLOR_TEXTURE
+        ,texture2d<half> colorTexture,
+        sampler colorTextureSampler
     #endif
     #ifdef ROUGHNESS_TEXTURE
         ,texture2d<half> roughnessTexture,
@@ -88,17 +88,17 @@ fragment FragmentOut fragmentMain(
 ) {
     FragmentOut result;
 
-    #ifdef COLOUR_TEXTURE
-    half4 colour =  colourTexture.sample(colourTextureSampler, interpolate.colourCoord);
-    #ifdef COLOUR_TEXTURE_INVERT
-    colour = 1.0h - colour;
+    #ifdef COLOR_TEXTURE
+    half4 color =  colorTexture.sample(colorTextureSampler, interpolate.colorCoord);
+    #ifdef COLOR_TEXTURE_INVERT
+    color = 1.0h - color;
     #endif
     #else
-    half4 colour = half4(uniforms.colour);
+    half4 color = half4(uniforms.color);
     #endif
 
     #ifdef ROUGHNESS_TEXTURE
-    half roughness =  roughnessTexture.sample(roughnessTextureSampler, interpolate.colourCoord).r;
+    half roughness =  roughnessTexture.sample(roughnessTextureSampler, interpolate.colorCoord).r;
     #ifdef ROUGHNESS_TEXTURE_INVERT
     roughness = 1.0h - roughness;
     #endif
@@ -107,7 +107,7 @@ fragment FragmentOut fragmentMain(
     #endif
 
     #ifdef METALNESS_TEXTURE
-    half metalness =  metalnessTexture.sample(metalnessTextureSampler, interpolate.colourCoord).r;
+    half metalness =  metalnessTexture.sample(metalnessTextureSampler, interpolate.colorCoord).r;
     #ifdef METALNESS_TEXTURE_INVERT
     metalness = 1.0h - metalness;
     #endif
@@ -117,7 +117,7 @@ fragment FragmentOut fragmentMain(
 
     #ifdef TRANSPARENCY
     #ifdef TRANSPARENCY_TEXTURE
-    half transparency =  transparencyTexture.sample(transparencyTextureSampler, interpolate.colourCoord).r;
+    half transparency =  transparencyTexture.sample(transparencyTextureSampler, interpolate.colorCoord).r;
     #ifdef TRANSPARENCY_TEXTURE_INVERT
     transparency = 1.0h - transparency;
     #endif
@@ -126,21 +126,21 @@ fragment FragmentOut fragmentMain(
     #endif
     #endif
 
-    half3 col = colour.rgb * (1.0h + half(uniforms.brightness));
+    half3 col = color.rgb * (1.0h + half(uniforms.brightness));
     half alpha = 1.0h;
 
     #ifdef TRANSPARENCY
     alpha = 1.0h - transparency;
     #endif
 
-    #ifdef INST_COLOUR
+    #ifdef INST_COLOR
     #ifdef TRANSPARENCY
-    half4 instCol = half4(uniforms.instColour.rgb, 1.0h);
-    alpha = min(alpha, uniforms.instColour.a);
+    half4 instCol = half4(uniforms.instColor.rgb, 1.0h);
+    alpha = min(alpha, uniforms.instColor.a);
     #else
-    half4 instCol = uniforms.instColour;
+    half4 instCol = uniforms.instColor;
     #endif
-    col = INST_COLOUR_BLEND(half4(col, 1.0h), instCol).rgb;
+    col = INST_COLOR_BLEND(half4(col, 1.0h), instCol).rgb;
     #endif
 
     half rough = 0.1h + 0.85h * clamp(roughness, 0.0h, 1.0h);
@@ -156,8 +156,8 @@ fragment FragmentOut fragmentMain(
     if (normal.z < 0.0) normal = -normal;
     #endif
     #ifdef NORMAL_TEXTURE
-    float3x3 tbn = getTBN(interpolate.viewPos, interpolate.colourCoord, normal);
-    normal = tbn * normalize(normalTexture.sample(normalTextureSampler, interpolate.colourCoord).xyz * 2.0 - 1.0);
+    float3x3 tbn = getTBN(interpolate.viewPos, interpolate.colorCoord, normal);
+    normal = tbn * normalize(normalTexture.sample(normalTextureSampler, interpolate.colorCoord).xyz * 2.0 - 1.0);
     #endif
 
     half nDv = max(0.0h, half(dot(viewVec, normal)));
@@ -176,7 +176,7 @@ fragment FragmentOut fragmentMain(
     half denom = nDh2 * (r2 - 1.0h) + 1.0h;
     denom = denom * denom * 5.0h;
 
-    half3 lightCol = half3(uniforms.lightColour.rgb);
+    half3 lightCol = half3(uniforms.lightColor.rgb);
     half3 diffuseLight = lightCol * nDl;
     half specularCoef = pow(nDh, 1.0h + 60.0h * shine);
     half3 specular = lightCol * reflectance * specularCoef * min(1.0h, r2 / denom);
@@ -186,7 +186,7 @@ fragment FragmentOut fragmentMain(
 
     half metalicDiffuseDampen = 0.3h;
     
-    half3 ambientCol = half3(uniforms.ambientColour.rgb);
+    half3 ambientCol = half3(uniforms.ambientColor.rgb);
 
     #ifdef ENVIRONMENT_TEXTURE
     metalicDiffuseDampen += 0.2h * (1.0h - roughness);
@@ -211,9 +211,9 @@ fragment FragmentOut fragmentMain(
     half3 dielectric = (1.0h - diffuse) * specular;
     half3 metalic = (1.0h - max(max(diffuse.r, diffuse.g), diffuse.b)) * metalicSpecular;
     half3 finalSpecular = dielectric * (1.0h - metal) + metalic * metal;
-    half3 finalColour = diffuse + finalSpecular;
+    half3 finalColor = diffuse + finalSpecular;
 
-    result.fragmentColour = half4(finalColour, alpha);
+    result.fragmentColor = half4(finalColor, alpha);
 
     return result;
 }

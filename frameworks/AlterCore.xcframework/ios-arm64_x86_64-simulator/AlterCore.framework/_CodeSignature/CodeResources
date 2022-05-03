@@ -10,31 +10,31 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		APz4Ws5uS336YUorLz+xCKYVy8Y=
+		C2bgn1Xg4079Nm4PeISoG5R2gPg=
 		</data>
 		<key>Modules/AlterCore.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		oTqJ87+IqLS9da4K0DiGX8YCksA=
+		BsDJxlsem80DcPBdAygWv5S0JQs=
 		</data>
 		<key>Modules/AlterCore.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		qP+PuvCeClS76IJVjLf3i5ea6XY=
+		hDFToXzI8l/dyC0N/1LhVpSgUeg=
 		</data>
 		<key>Modules/AlterCore.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		gPr1+0lK5rD6orcGpc3S3I4/BXE=
+		cNkJlIrg7ZJn+yJOiA+t+Sq/IqU=
 		</data>
 		<key>Modules/AlterCore.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		oTqJ87+IqLS9da4K0DiGX8YCksA=
+		BsDJxlsem80DcPBdAygWv5S0JQs=
 		</data>
 		<key>Modules/AlterCore.swiftmodule/arm64.swiftinterface</key>
 		<data>
-		qP+PuvCeClS76IJVjLf3i5ea6XY=
+		hDFToXzI8l/dyC0N/1LhVpSgUeg=
 		</data>
 		<key>Modules/AlterCore.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		gPr1+0lK5rD6orcGpc3S3I4/BXE=
+		cNkJlIrg7ZJn+yJOiA+t+Sq/IqU=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -54,42 +54,42 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			AnZpkNBz1lpvpGo7+Wj0jKbwCnWgjcTjTNl7q13B1f0=
+			Yqv0akC3cx6jCTADL5kqyoxfeJLO06Ecp1KPZIBu6qY=
 			</data>
 		</dict>
 		<key>Modules/AlterCore.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			n1Rb6RTVYC6kok4TzrtYTxMcaRs8JQxnKwi5IGV6nZQ=
+			dPhdMvbJXiwcpcXFxoa2k9Jw5emXll/xo++GHS2knto=
 			</data>
 		</dict>
 		<key>Modules/AlterCore.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Fy+Q0+xOsYWxzqHuFtagkhjJOX32lVwivv7CF1P0mms=
+			+6CwlG2L/3dadGQSps/0VUi5F6ymVKvHHNg40LuyNFQ=
 			</data>
 		</dict>
 		<key>Modules/AlterCore.swiftmodule/arm64.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			AnZpkNBz1lpvpGo7+Wj0jKbwCnWgjcTjTNl7q13B1f0=
+			Yqv0akC3cx6jCTADL5kqyoxfeJLO06Ecp1KPZIBu6qY=
 			</data>
 		</dict>
 		<key>Modules/AlterCore.swiftmodule/arm64.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			n1Rb6RTVYC6kok4TzrtYTxMcaRs8JQxnKwi5IGV6nZQ=
+			dPhdMvbJXiwcpcXFxoa2k9Jw5emXll/xo++GHS2knto=
 			</data>
 		</dict>
 		<key>Modules/AlterCore.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Fy+Q0+xOsYWxzqHuFtagkhjJOX32lVwivv7CF1P0mms=
+			+6CwlG2L/3dadGQSps/0VUi5F6ymVKvHHNg40LuyNFQ=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

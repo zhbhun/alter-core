@@ -107,7 +107,7 @@ struct FragmentUniforms {
 
 
 struct FragmentOut {
-    float4 fragmentColour [[ color(0) ]];
+    float4 fragmentColor [[ color(0) ]];
 };
 
 
@@ -503,6 +503,6 @@ fragment FragmentOut fragmentMain(
             background = BLEND7(background, foreground);
     #endif
 
-    result.fragmentColour = background;
+    result.fragmentColor = background;
     return result;
 }

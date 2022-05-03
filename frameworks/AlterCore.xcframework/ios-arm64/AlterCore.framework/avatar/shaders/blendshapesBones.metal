@@ -33,9 +33,9 @@ struct Interpolate {
     float4 position [[ position ]];
     float3 viewPos;
     float3 viewNorm;
-    float2 colourCoord;
-    #ifdef INST_COLOUR_TEXTURE
-        float4 instColour;
+    float2 colorCoord;
+    #ifdef INST_COLOR_TEXTURE
+        float4 instColor;
     #endif
 };
 
@@ -75,9 +75,9 @@ vertex Interpolate vertexMain(
         sampler instPositionScaleTextureSampler
         ,texture2d<float> instRotationTexture,
         sampler instRotationTextureSampler
-        #ifdef INST_COLOUR_TEXTURE
-            ,texture2d<float> instColourTexture,
-            sampler instColourTextureSampler
+        #ifdef INST_COLOR_TEXTURE
+            ,texture2d<float> instColorTexture,
+            sampler instColorTextureSampler
         #endif
     #endif
 ) {
@@ -104,8 +104,8 @@ vertex Interpolate vertexMain(
     uint2 instCoord = uint2(instanceID % instTexWidth, instanceID / instTexWidth);
     float4 instPositionScale = instPositionScaleTexture.read(instCoord);
     float4 instRotation = instRotationTexture.read(instCoord);
-    #ifdef INST_COLOUR_TEXTURE
-    result.instColour = instColourTexture.read(instCoord);
+    #ifdef INST_COLOR_TEXTURE
+    result.instColor = instColorTexture.read(instCoord);
     #endif
     #endif
 
@@ -181,7 +181,7 @@ vertex Interpolate vertexMain(
 
     result.position = uniforms.projection * hViewPos;
     result.viewPos = hViewPos.xyz;
-    result.colourCoord = texc;
+    result.colorCoord = texc;
 
     return result;
 }
