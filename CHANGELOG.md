@@ -1,6 +1,22 @@
 # Changelog
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.14.0 - 2022-05-22
+### Added
+- CameraTrackerController that connects CameraWrapper and TrackerAvatarController in one convenient object
+- ViewportFitAvatarController that makes sure the avatar always fits in the given viewport
+- AnimatingAvatarController that allows driving the avatar from a keyframe animation
+- RecordingAvatarController that allows recording a keyframe animation for AnimatingAvatarController
+- pause/resumeRendering is available on AvatarView on all platforms
+
+### Fixed
+- Inconsistencies in designer logic
+- Unnecessary test code and resources being included in the production build
+- Javascript APIs not properly accepting JS Maps/objects as parameters
+
+### Changed
+- CameraWrapper methods on iOS do not require named parameters anymore (in line with the rest of the API)
+
 ## 0.13.0 - 2022-05-03
 ### Added
 - SerializingTrackerAvatarController and DeserializingTrackerAvatarController to support a simple integration of the face tracker result serialization

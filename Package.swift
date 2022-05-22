@@ -4,22 +4,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "alter-core",
+    name: "facemoji-core",
     platforms: [
             .iOS(.v13)
 //          .macOS(.v10_14), 
     ],
     products: [
         .library(
-            name: "alter-core",
-            targets: ["AlterCore"]),
+            name: "facemoji-core",
+            targets: ["facemoji-core"]),
     ],
     dependencies: [
     ],
     targets: [
         .binaryTarget(
-                    name: "AlterCore",
-                    path: "frameworks/AlterCore.xcframework"
+                    name: "facemoji-core",
+                    path: "FacemojiCore.xcframework"
                 )
     ]
 )

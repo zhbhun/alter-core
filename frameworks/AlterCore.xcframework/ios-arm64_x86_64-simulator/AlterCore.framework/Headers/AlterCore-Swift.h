@@ -247,18 +247,6 @@ SWIFT_CLASS("_TtC9AlterCore17BaseVideoRecorder")
 @end
 
 
-
-/// Provides an easy to manipulate camera object for feeding images into <code>FaceTracker</code>.
-SWIFT_CLASS("_TtC9AlterCore13CameraWrapper")
-@interface CameraWrapper : NSObject
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-@end
-
-
-@interface CameraWrapper (SWIFT_EXTENSION(AlterCore)) <AVCaptureVideoDataOutputSampleBufferDelegate>
-- (void)captureOutput:(AVCaptureOutput * _Nonnull)output didOutputSampleBuffer:(CMSampleBufferRef _Nonnull)sampleBuffer fromConnection:(AVCaptureConnection * _Nonnull)connection;
-@end
-
 @protocol MTLDevice;
 
 SWIFT_CLASS("_TtC9AlterCore16MetalTextureView")

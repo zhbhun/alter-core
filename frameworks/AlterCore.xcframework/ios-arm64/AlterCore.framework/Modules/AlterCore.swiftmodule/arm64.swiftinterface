@@ -1,7 +1,6 @@
 // swift-interface-format-version: 1.0
 // swift-compiler-version: Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)
 // swift-module-flags: -target arm64-apple-ios11.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -module-name AlterCore
-import AVFoundation
 import AVKit
 
 import CoreGraphics
@@ -25,39 +24,12 @@ import _Concurrency
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) public func setOnFrameListener(_ onFrame: @escaping (_ deltaTime: Swift.Float) -> Swift.Void)
+  @_Concurrency.MainActor(unsafe) public func pauseRendering(_ onRenderingFinished: (() -> Swift.Void)?)
+  @_Concurrency.MainActor(unsafe) public func resumeRendering()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func layoutSubviews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func didMoveToSuperview()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func didMoveToWindow()
   @objc deinit
-}
-@objc @_inheritsConvenienceInitializers public class CameraWrapper : ObjectiveC.NSObject {
-  public var automaticallyAdjustOrientation: Swift.Bool
-  @discardableResult
-  public func start(frontFacing: Swift.Bool = true) -> AlterCore.Future<AlterCore.Try<Swift.Void>>
-  public func addOnFrameListener(_ listener: @escaping (CoreMedia.CMSampleBuffer) -> Swift.Void)
-  public func changeOrientation(_ newOrientation: UIKit.UIDeviceOrientation = UIDevice.current.orientation)
-  public var imageOrientation: ImageIO.CGImagePropertyOrientation {
-    get
-  }
-  public var frameResolution: (Swift.Int, Swift.Int) {
-    get
-  }
-  public var paused: Swift.Bool {
-    get
-  }
-  public func toggleFlash()
-  @discardableResult
-  public func pause() -> AlterCore.Future<Swift.Void>
-  @discardableResult
-  public func resume() -> AlterCore.Future<Swift.Void>
-  @discardableResult
-  public func stop() -> AlterCore.Future<AlterCore.Try<Swift.Void>>
-  public func switchLowLight(lowLightOn: Swift.Bool)
-  @objc deinit
-  @objc override dynamic public init()
-}
-extension AlterCore.CameraWrapper : AVFoundation.AVCaptureVideoDataOutputSampleBufferDelegate {
-  @objc dynamic public func captureOutput(_ output: AVFoundation.AVCaptureOutput, didOutput sampleBuffer: CoreMedia.CMSampleBuffer, from connection: AVFoundation.AVCaptureConnection)
 }
 extension UIKit.UIColor {
   public var rgbComponents: (red: CoreGraphics.CGFloat, green: CoreGraphics.CGFloat, blue: CoreGraphics.CGFloat, alpha: CoreGraphics.CGFloat) {
@@ -180,10 +152,6 @@ public func doubleArrayOf(_ items: Swift.Double...) -> [Swift.Double]
 public func floatArrayOf(_ items: Swift.Float...) -> AlterCore.KotlinFloatArray
 public func intArrayOf(_ items: Swift.Int...) -> AlterCore.KotlinIntArray
 public func doubleArrayOf(_ items: Swift.Double...) -> AlterCore.KotlinDoubleArray
-extension Swift.Int : AlterCore.KotlinComparable {
-  public typealias T = Swift.Int
-  public func compareTo(_ other: Swift.Int) -> Swift.Int
-}
 public func assert(_ condition: Swift.Bool)
 public func numArrayOf(_ elements: AlterCore.KotlinDoubleArray) -> AlterCore.KotlinFloatArray
 public func numArrayOf(_ elements_: AlterCore.KotlinFloatArray) -> AlterCore.KotlinFloatArray
@@ -223,7 +191,8 @@ extension AlterCore.FileSystem {
 extension AlterCore.FileSystem {
   public func readImageCube(_ xPos: AlterCore.Path, _ xNeg: AlterCore.Path, _ yPos: AlterCore.Path, _ yNeg: AlterCore.Path, _ zPos: AlterCore.Path, _ zNeg: AlterCore.Path) -> AlterCore.Future<AlterCore.Try<AlterCore.ImageCube>>
 }
-public func avatarDataUrlFromKey(_ key: Swift.String, _ version: Swift.String? = nil) -> Swift.String
+public func avatarDataUrlFromKey(_ key: Swift.String) -> Swift.String
+public func versionedDataUrlFromKey(_ key: Swift.String, _ version: Swift.String? = nil) -> Swift.String
 public func createAvatarRenderer(_ avatarRendererConfig: AlterCore.AvatarRendererConfig, _ bundledFileSystem: AlterCore.FileSystem? = nil) -> AlterCore.Future<AlterCore.Try<AlterCore.AvatarRenderer>>
 extension AlterCore.AvatarRenderer {
   public func drawUIImage(_ width: Swift.Int, _ height: Swift.Int, _ superSampling: Swift.Float = Float(2), _ flipY: Swift.Bool = false) -> AlterCore.Try<UIKit.UIImage>
@@ -390,7 +359,9 @@ public protocol Vec {
   func length() -> Swift.Float
   func lengthSquared() -> Swift.Float
   func min() -> Swift.Float
+  func min(_ rhs: Self.T) -> Self
   func max() -> Swift.Float
+  func max(_ rhs: Self.T) -> Self
   func dot(_ rhs: Self.T) -> Swift.Float
   func normalized() -> Self?
   func normalized(_ default: Self.T) -> Self
@@ -427,7 +398,9 @@ public protocol Vec {
   public func length() -> Swift.Float
   public func lengthSquared() -> Swift.Float
   public func min() -> Swift.Float
+  public func min(_ rhs: AlterCore.VecWrapper.T) -> Self
   public func max() -> Swift.Float
+  public func max(_ rhs: AlterCore.VecWrapper.T) -> Self
   public func dot(_ rhs: AlterCore.VecWrapper.T) -> Swift.Float
   public func normalized() -> Self?
   public func normalized(_ default: AlterCore.VecWrapper.T) -> Self
@@ -466,7 +439,9 @@ public protocol Vec {
   public func length() -> Swift.Float
   public func lengthSquared() -> Swift.Float
   public func min() -> Swift.Float
+  public func min(_ rhs: AlterCore.Vector.T) -> Self
   public func max() -> Swift.Float
+  public func max(_ rhs: AlterCore.Vector.T) -> Self
   public func dot(_ rhs: AlterCore.Vector.T) -> Swift.Float
   public func normalized() -> Self?
   public func normalized(_ default: AlterCore.Vector.T) -> Self
@@ -1251,20 +1226,6 @@ public protocol VecBinaryOperator {
     get
   }
 }
-public protocol KotlinComparable {
-  associatedtype T
-  func compareTo(_ other: Self.T) -> Swift.Int
-}
-@_hasMissingDesignatedInitializers public class KotlinComparableWrapper<T> : AlterCore.ConvertibleToKotlin, AlterCore.KotlinComparable {
-  public typealias T = T
-  public var _wrappedKotlinComparable: Swift.AnyObject {
-    get
-  }
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public func compareTo(_ other: T) -> Swift.Int
-}
 public enum FillMode : Swift.CustomStringConvertible, AlterCore.ConvertibleToKotlin, Swift.CustomDebugStringConvertible {
   case stretch
   case zoom
@@ -1505,6 +1466,42 @@ extension AlterCore.ImageCube {
   }
   public static func == (lhs: AlterCore.MetalImage, rhs: AlterCore.MetalImage) -> Swift.Bool
   override public func hash(into hasher: inout Swift.Hasher)
+}
+@_hasMissingDesignatedInitializers public class CameraWrapper : AlterCore.ConvertibleToKotlin, Swift.Hashable {
+  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
+  public func asKotlin() -> Swift.AnyObject
+  @objc deinit
+  public convenience init()
+  public var automaticallyAdjustOrientation: Swift.Bool {
+    get
+    set(newValue)
+  }
+  public var imageOrientation: Swift.UInt32 {
+    get
+  }
+  public var frameResolution: AlterCore.KotlinPair<Swift.Int, Swift.Int> {
+    get
+  }
+  public var paused: Swift.Bool {
+    get
+  }
+  @discardableResult
+  public func start(_ frontFacing: Swift.Bool) -> AlterCore.Future<AlterCore.Try<Swift.Void>>
+  public func addOnFrameListener(_ listener: @escaping (AlterCore.TrackerImage) -> Swift.Void)
+  public func changeOrientation(_ newOrientation: AlterCore.UIKUIDeviceOrientation? = nil)
+  public func toggleFlash() -> AlterCore.Try<Swift.Void>
+  @discardableResult
+  public func pause() -> AlterCore.Future<AlterCore.Try<Swift.Void>>
+  @discardableResult
+  public func resume() -> AlterCore.Future<AlterCore.Try<Swift.Void>>
+  @discardableResult
+  public func stop() -> AlterCore.Future<AlterCore.Try<Swift.Void>>
+  public func switchLowLight(_ lowLightOn: Swift.Bool) -> AlterCore.Try<Swift.Void>
+  public static func == (lhs: AlterCore.CameraWrapper, rhs: AlterCore.CameraWrapper) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
 }
 @_hasMissingDesignatedInitializers public class FaceTrackerResult : AlterCore.ConvertibleToKotlin, Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
@@ -2332,140 +2329,10 @@ public protocol AvatarDesignerLogic {
   public func selectColor(_ config: AlterCore.DesignerConfigurationDefinition, _ itemName: Swift.String, _ colorPickerName: Swift.String, _ colorVariantIndex: Swift.Int) -> AlterCore.DesignerConfigurationDefinition
   public func configurationToAvatarMatrix(_ config: AlterCore.DesignerConfigurationDefinition) -> AlterCore.AvatarMatrix
   public func avatarMatrixToConfiguration(_ avatarMatrix: AlterCore.AvatarMatrix) -> AlterCore.DesignerConfigurationDefinition
-  public static func create(_ dataFileSystem: AlterCore.FileSystem, _ logicConfigFileSystem: AlterCore.FileSystem? = nil, _ configFilePath: Swift.String = "jsons/designerlogic/logic_configuration.json", _ localeCode: Swift.String = DEFAULT_LOCALE, _ thumbnailSuffixAndExtension: Swift.String = ".png", _ warnOnIncompleteData: Swift.Bool = true) -> AlterCore.Future<AlterCore.Try<AlterCore.ConfigurableAvatarDesignerLogic>>
-  public static func create(_ avatarFactory: AlterCore.AvatarFactory, _ logicConfigFileSystem: AlterCore.FileSystem? = nil, _ configFilePath: Swift.String = "jsons/designerlogic/logic_configuration.json", _ localeCode: Swift.String = DEFAULT_LOCALE, _ thumbnailSuffixAndExtension: Swift.String = ".png", _ warnOnIncompleteData: Swift.Bool = true) -> AlterCore.Future<AlterCore.Try<AlterCore.ConfigurableAvatarDesignerLogic>>
+  public static func create(_ dataFileSystem: AlterCore.FileSystem, _ logicConfigFileSystem: AlterCore.FileSystem? = nil, _ configFilePath: Swift.String = "jsons/designerlogic/logic_configuration.json", _ localeCode: Swift.String = DEFAULT_LOCALE, _ thumbnailSuffixAndExtension: Swift.String = ".png", _ warnOnIncompleteData: Swift.Bool = true, _ expandMaterialsToVariants: Swift.Bool = false) -> AlterCore.Future<AlterCore.Try<AlterCore.ConfigurableAvatarDesignerLogic>>
+  public static func create(_ avatarFactory: AlterCore.AvatarFactory, _ logicConfigFileSystem: AlterCore.FileSystem? = nil, _ configFilePath: Swift.String = "jsons/designerlogic/logic_configuration.json", _ localeCode: Swift.String = DEFAULT_LOCALE, _ thumbnailSuffixAndExtension: Swift.String = ".png", _ warnOnIncompleteData: Swift.Bool = true, _ expandMaterialsToVariants: Swift.Bool = false) -> AlterCore.Future<AlterCore.Try<AlterCore.ConfigurableAvatarDesignerLogic>>
   public static func == (lhs: AlterCore.ConfigurableAvatarDesignerLogic, rhs: AlterCore.ConfigurableAvatarDesignerLogic) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class AssetListGenerator : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ fileSystem: AlterCore.FileSystem, _ device: AlterCore.Device, _ logFilter: ((Swift.String) -> Swift.Bool)? = nil)
-  public func scanAssets(_ matrixPaths: Any, _ fileWithItemList: Swift.String) -> AlterCore.Future<AlterCore.Try<[Swift.String]>>
-  public static func == (lhs: AlterCore.AssetListGenerator, rhs: AlterCore.AssetListGenerator) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-public enum GeneratorMode : Swift.CustomStringConvertible, AlterCore.ConvertibleToKotlin, Swift.CustomDebugStringConvertible {
-  case position
-  case rotation
-  case scale
-  public var ordinal: Swift.Int {
-    get
-  }
-  public var description: Swift.String {
-    get
-  }
-  public var debugDescription: Swift.String {
-    get
-  }
-  public init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  public static func == (a: AlterCore.GeneratorMode, b: AlterCore.GeneratorMode) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-public protocol AvatarController {
-  func frame() -> AlterCore.AvatarAnimationData?
-}
-@_hasMissingDesignatedInitializers public class AvatarControllerWrapper : AlterCore.ConvertibleToKotlin, AlterCore.AvatarController {
-  public var _wrappedAvatarController: Swift.AnyObject {
-    get
-  }
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public func frame() -> AlterCore.AvatarAnimationData?
-}
-@_hasMissingDesignatedInitializers public class GeneratorController : AlterCore.ConvertibleToKotlin, Swift.Hashable, AlterCore.AvatarController {
-  public var _wrappedAvatarController: Swift.AnyObject {
-    get
-  }
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ changeMode: AlterCore.GeneratorMode, _ renderer: AlterCore.AvatarRenderer, _ startingPosition: AlterCore.AvatarAnimationData)
-  public func pointerMove(_ x: Swift.Float, _ y: Swift.Float)
-  public func pointerDown(_ x: Swift.Float, _ y: Swift.Float)
-  public func pointerUp(_ x: Swift.Float, _ y: Swift.Float)
-  public func decreaseScale()
-  public func increaseScale()
-  public func frame() -> AlterCore.AvatarAnimationData?
-  public func setGeneratorMode(_ mode: AlterCore.GeneratorMode)
-  public static func == (lhs: AlterCore.GeneratorController, rhs: AlterCore.GeneratorController) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class ItemMetadataAndThumbnailBatchGenerator : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ loader: AlterCore.AvatarLoader, _ renderer: AlterCore.AvatarRenderer, _ fileSystem: AlterCore.WriteableFileSystem, _ imageConvertor: @escaping (AlterCore.UIKitImage) -> AlterCore.KotlinByteArray)
-  public func generateThumbnails(_ fileWithItemList: Swift.String, _ width: Swift.Int, _ height: Swift.Int, _ superSampling: Swift.Float, _ saveMetadata: Swift.Bool, _ saveThumbnail: Swift.Bool) -> AlterCore.Future<Swift.Void?>
-  public static func == (lhs: AlterCore.ItemMetadataAndThumbnailBatchGenerator, rhs: AlterCore.ItemMetadataAndThumbnailBatchGenerator) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class ItemMetadataAndThumbnailGenerator : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public var controller: AlterCore.GeneratorController {
-    get
-  }
-  public func generateThumbnails(_ width: Swift.Int, _ height: Swift.Int, _ superSampling: Swift.Float, _ saveConfig: Swift.Bool = true, _ saveMetadata: Swift.Bool = true, _ saveThumbnail: Swift.Bool = true) -> AlterCore.Future<Swift.Void>
-  public static func create(_ loader: AlterCore.AvatarLoader, _ renderer: AlterCore.AvatarRenderer, _ fileSystem: AlterCore.WriteableFileSystem, _ itemReference: AlterCore.ItemReferenceDefinition, _ overrideMatrix: AlterCore.AvatarMatrix? = nil, _ overrideView: AlterCore.AvatarAnimationData? = nil, _ imageConvertor: @escaping (AlterCore.UIKitImage) -> AlterCore.KotlinByteArray) -> AlterCore.Future<AlterCore.Try<AlterCore.ItemMetadataAndThumbnailGenerator>>
-  public static func == (lhs: AlterCore.ItemMetadataAndThumbnailGenerator, rhs: AlterCore.ItemMetadataAndThumbnailGenerator) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class ThumbnailConfigDefinition : AlterCore.ConvertibleToKotlin, Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ matrix: AlterCore.AvatarMatrix, _ view: AlterCore.TransformDefinition, _ properties: [Swift.String : Swift.String] = [:], _ completeMatrix: Swift.Bool = false)
-  public var matrix: AlterCore.AvatarMatrix {
-    get
-  }
-  public var view: AlterCore.TransformDefinition {
-    get
-  }
-  public var properties: [Swift.String : Swift.String] {
-    get
-  }
-  public var completeMatrix: Swift.Bool {
-    get
-  }
-  public func isEqual(_ other: Any?) -> Swift.Bool
-  public func hash() -> Swift.UInt
-  public func component1() -> AlterCore.AvatarMatrix
-  public func component2() -> AlterCore.TransformDefinition
-  public func component3() -> [Swift.String : Swift.String]
-  public func component4() -> Swift.Bool
-  public func doCopy(_ matrix: AlterCore.AvatarMatrix, _ view: AlterCore.TransformDefinition, _ properties: [Swift.String : Swift.String] = [:], _ completeMatrix: Swift.Bool = false) -> AlterCore.ThumbnailConfigDefinition
-  public static func serializer<TKotlinx_serialization_coreKSerializer>() -> TKotlinx_serialization_coreKSerializer where TKotlinx_serialization_coreKSerializer : AlterCore.Kotlinx_serialization_coreKSerializer, TKotlinx_serialization_coreKSerializer.T == AlterCore.ThumbnailConfigDefinition
-  public static func == (lhs: AlterCore.ThumbnailConfigDefinition, rhs: AlterCore.ThumbnailConfigDefinition) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var description: Swift.String {
-    get
-  }
-  public var debugDescription: Swift.String {
-    get
-  }
   public var hashValue: Swift.Int {
     get
   }
@@ -2713,6 +2580,8 @@ public enum ItemState : Swift.CustomStringConvertible, AlterCore.ConvertibleToKo
   public func component4() -> [Swift.String : AlterCore.SectionConfigurationDefinition]
   public func component5() -> AlterCore.SelectionsDefinition
   public func doCopy(_ items: [Swift.String : AlterCore.ItemMetadataDefinition], _ itemStates: [Swift.String : AlterCore.ItemState], _ sectionHierarchy: [AlterCore.SectionNodeDefinition], _ sections: [Swift.String : AlterCore.SectionConfigurationDefinition], _ selections: AlterCore.SelectionsDefinition) -> AlterCore.DesignerConfigurationDefinition
+  public func itemByName(_ name: Swift.String?) -> AlterCore.ItemMetadataDefinition?
+  public func itemStateByName(_ name: Swift.String?) -> AlterCore.ItemState?
   public static func serializer<TKotlinx_serialization_coreKSerializer>() -> TKotlinx_serialization_coreKSerializer where TKotlinx_serialization_coreKSerializer : AlterCore.Kotlinx_serialization_coreKSerializer, TKotlinx_serialization_coreKSerializer.T == AlterCore.DesignerConfigurationDefinition
   public static func == (lhs: AlterCore.DesignerConfigurationDefinition, rhs: AlterCore.DesignerConfigurationDefinition) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
@@ -2841,7 +2710,7 @@ public enum ItemState : Swift.CustomStringConvertible, AlterCore.ConvertibleToKo
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
   public func asKotlin() -> Swift.AnyObject
   @objc deinit
-  public convenience init(_ avatarPresetsPath: Swift.String, _ sectionHierarchy: [AlterCore.DesignerLogicSectionNodeDefinition], _ sectionConfigurations: [Swift.String : AlterCore.DesignerLogicSectionConfigurationDefinition])
+  public convenience init(_ avatarPresetsPath: Swift.String, _ sectionHierarchy: [AlterCore.DesignerLogicSectionNodeDefinition], _ sectionConfigurations: [Swift.String : AlterCore.DesignerLogicSectionConfigurationDefinition], _ avatarMatrixSectionOrder: [Swift.String])
   public var avatarPresetsPath: Swift.String {
     get
   }
@@ -2851,12 +2720,16 @@ public enum ItemState : Swift.CustomStringConvertible, AlterCore.ConvertibleToKo
   public var sectionConfigurations: [Swift.String : AlterCore.DesignerLogicSectionConfigurationDefinition] {
     get
   }
+  public var avatarMatrixSectionOrder: [Swift.String] {
+    get
+  }
   public func isEqual(_ other: Any?) -> Swift.Bool
   public func hash() -> Swift.UInt
   public func component1() -> Swift.String
   public func component2() -> [AlterCore.DesignerLogicSectionNodeDefinition]
   public func component3() -> [Swift.String : AlterCore.DesignerLogicSectionConfigurationDefinition]
-  public func doCopy(_ avatarPresetsPath: Swift.String, _ sectionHierarchy: [AlterCore.DesignerLogicSectionNodeDefinition], _ sectionConfigurations: [Swift.String : AlterCore.DesignerLogicSectionConfigurationDefinition]) -> AlterCore.DesignerLogicConfigurationDefinition
+  public func component4() -> [Swift.String]
+  public func doCopy(_ avatarPresetsPath: Swift.String, _ sectionHierarchy: [AlterCore.DesignerLogicSectionNodeDefinition], _ sectionConfigurations: [Swift.String : AlterCore.DesignerLogicSectionConfigurationDefinition], _ avatarMatrixSectionOrder: [Swift.String]) -> AlterCore.DesignerLogicConfigurationDefinition
   public static func serializer<TKotlinx_serialization_coreKSerializer>() -> TKotlinx_serialization_coreKSerializer where TKotlinx_serialization_coreKSerializer : AlterCore.Kotlinx_serialization_coreKSerializer, TKotlinx_serialization_coreKSerializer.T == AlterCore.DesignerLogicConfigurationDefinition
   public static func == (lhs: AlterCore.DesignerLogicConfigurationDefinition, rhs: AlterCore.DesignerLogicConfigurationDefinition) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
@@ -2961,7 +2834,7 @@ public enum ItemState : Swift.CustomStringConvertible, AlterCore.ConvertibleToKo
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
   public func asKotlin() -> Swift.AnyObject
   @objc deinit
-  public convenience init(_ title: Swift.String, _ palette: AlterCore.PaletteDefinition, _ propertiesToPaletteValues: [Swift.String : Swift.String], _ paletteValuesToProperties: [Swift.String : [Swift.String]], _ limitedToMaterialPicks: [Swift.String : Swift.String]? = nil)
+  public convenience init(_ title: Swift.String, _ palette: AlterCore.PaletteDefinition, _ propertiesToPaletteValues: [Swift.String : Swift.String], _ paletteValuesToProperties: [Swift.String : [Swift.String]], _ limitedToMaterialPicks: [Swift.String : Swift.Set<Swift.String>]? = nil)
   public var title: Swift.String {
     get
   }
@@ -2974,7 +2847,7 @@ public enum ItemState : Swift.CustomStringConvertible, AlterCore.ConvertibleToKo
   public var paletteValuesToProperties: [Swift.String : [Swift.String]] {
     get
   }
-  public var limitedToMaterialPicks: [Swift.String : Swift.String]? {
+  public var limitedToMaterialPicks: [Swift.String : Swift.Set<Swift.String>]? {
     get
   }
   public func isEqual(_ other: Any?) -> Swift.Bool
@@ -2983,8 +2856,8 @@ public enum ItemState : Swift.CustomStringConvertible, AlterCore.ConvertibleToKo
   public func component2() -> AlterCore.PaletteDefinition
   public func component3() -> [Swift.String : Swift.String]
   public func component4() -> [Swift.String : [Swift.String]]
-  public func component5() -> [Swift.String : Swift.String]?
-  public func doCopy(_ title: Swift.String, _ palette: AlterCore.PaletteDefinition, _ propertiesToPaletteValues: [Swift.String : Swift.String], _ paletteValuesToProperties: [Swift.String : [Swift.String]], _ limitedToMaterialPicks: [Swift.String : Swift.String]? = nil) -> AlterCore.ColorPickerMetadataDefinition
+  public func component5() -> [Swift.String : Swift.Set<Swift.String>]?
+  public func doCopy(_ title: Swift.String, _ palette: AlterCore.PaletteDefinition, _ propertiesToPaletteValues: [Swift.String : Swift.String], _ paletteValuesToProperties: [Swift.String : [Swift.String]], _ limitedToMaterialPicks: [Swift.String : Swift.Set<Swift.String>]? = nil) -> AlterCore.ColorPickerMetadataDefinition
   public static func serializer<TKotlinx_serialization_coreKSerializer>() -> TKotlinx_serialization_coreKSerializer where TKotlinx_serialization_coreKSerializer : AlterCore.Kotlinx_serialization_coreKSerializer, TKotlinx_serialization_coreKSerializer.T == AlterCore.ColorPickerMetadataDefinition
   public static func == (lhs: AlterCore.ColorPickerMetadataDefinition, rhs: AlterCore.ColorPickerMetadataDefinition) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
@@ -3430,115 +3303,6 @@ public enum LogLevel : Swift.CustomStringConvertible, AlterCore.ConvertibleToKot
     get
   }
 }
-@_hasMissingDesignatedInitializers public class HelloDeferred : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ resourceFs: AlterCore.ResourceFileSystem, _ deviceConfig: AlterCore.DeviceConfig)
-  public func draw(_ surface: AlterCore.PlatformRenderingSurface)
-  public static func == (lhs: AlterCore.HelloDeferred, rhs: AlterCore.HelloDeferred) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class HelloDeferredInstanced : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ resourceFs: AlterCore.ResourceFileSystem, _ deviceConfig: AlterCore.DeviceConfig)
-  public func watch()
-  public func draw(_ surface: AlterCore.PlatformRenderingSurface)
-  public static func == (lhs: AlterCore.HelloDeferredInstanced, rhs: AlterCore.HelloDeferredInstanced) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class HelloFiller : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ resourceFs: AlterCore.FileSystem, _ deviceConfig: AlterCore.DeviceConfig)
-  public func draw(_ surface: AlterCore.PlatformRenderingSurface)
-  public static func == (lhs: AlterCore.HelloFiller, rhs: AlterCore.HelloFiller) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class HelloFramebuffer : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ deviceConfig: AlterCore.DeviceConfig)
-  public func draw(_ surface: AlterCore.PlatformRenderingSurface)
-  public static func == (lhs: AlterCore.HelloFramebuffer, rhs: AlterCore.HelloFramebuffer) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class HelloParticles : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ resourceFileSystem: AlterCore.FileSystem, _ deviceConfig: AlterCore.DeviceConfig)
-  public func draw(_ surface: AlterCore.PlatformRenderingSurface)
-  public static func == (lhs: AlterCore.HelloParticles, rhs: AlterCore.HelloParticles) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class HelloResources : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ resourceFs: AlterCore.ResourceFileSystem, _ deviceConfig: AlterCore.DeviceConfig)
-  public func draw(_ surface: AlterCore.PlatformRenderingSurface)
-  public static func == (lhs: AlterCore.HelloResources, rhs: AlterCore.HelloResources) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class HelloTexturesHotSwap : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ resourceFs: AlterCore.FileSystem, _ deviceConfig: AlterCore.DeviceConfig)
-  public func draw(_ surface: AlterCore.PlatformRenderingSurface)
-  public static func == (lhs: AlterCore.HelloTexturesHotSwap, rhs: AlterCore.HelloTexturesHotSwap) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class HelloTextures : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ resourceFs: AlterCore.FileSystem, _ deviceConfig: AlterCore.DeviceConfig)
-  public func draw(_ surface: AlterCore.PlatformRenderingSurface)
-  public static func == (lhs: AlterCore.HelloTextures, rhs: AlterCore.HelloTextures) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-@_hasMissingDesignatedInitializers public class HelloTriangle : AlterCore.ConvertibleToKotlin, Swift.Hashable {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ deviceConfig: AlterCore.DeviceConfig)
-  public func draw(_ surface: AlterCore.PlatformRenderingSurface)
-  public static func == (lhs: AlterCore.HelloTriangle, rhs: AlterCore.HelloTriangle) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
 @_hasMissingDesignatedInitializers public class RendererViewWrapper : AlterCore.ConvertibleToKotlin, Swift.Hashable {
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
   public func asKotlin() -> Swift.AnyObject
@@ -3602,6 +3366,7 @@ public protocol AvatarRenderer {
   func clone() -> AlterCore.AvatarRenderer
   func fixedZReprojector(_ artisticScale: Swift.Float) -> AlterCore.FaceTrackerReprojector
   func fixedScaleReprojector(_ artisticScale: Swift.Float) -> AlterCore.FaceTrackerReprojector
+  func fitAvatarIntoView(_ avatarData: AlterCore.AvatarAnimationData, _ artisticScale: Swift.Float) -> AlterCore.AvatarAnimationData
   static func create(_ avatarRendererConfig: AlterCore.AvatarRendererConfig) -> AlterCore.Future<AlterCore.Try<AlterCore.AvatarRenderer>>
 }
 @_hasMissingDesignatedInitializers public class AvatarRendererWrapper : AlterCore.ConvertibleToKotlin, AlterCore.AvatarRenderer {
@@ -3661,6 +3426,7 @@ public protocol AvatarRenderer {
   public func clone() -> AlterCore.AvatarRenderer
   public func fixedZReprojector(_ artisticScale: Swift.Float = Float(1.0)) -> AlterCore.FaceTrackerReprojector
   public func fixedScaleReprojector(_ artisticScale: Swift.Float = Float(1.0)) -> AlterCore.FaceTrackerReprojector
+  public func fitAvatarIntoView(_ avatarData: AlterCore.AvatarAnimationData, _ artisticScale: Swift.Float = Float(1)) -> AlterCore.AvatarAnimationData
   public static func create(_ avatarRendererConfig: AlterCore.AvatarRendererConfig) -> AlterCore.Future<AlterCore.Try<AlterCore.AvatarRenderer>>
 }
 @_hasMissingDesignatedInitializers public class Avatar : AlterCore.ConvertibleToKotlin, Swift.Hashable, AlterCore.AvatarRenderer {
@@ -3737,6 +3503,7 @@ public protocol AvatarRenderer {
   public func setDefaultSmoothing(_ smoothing: Swift.Float)
   public func fixedZReprojector(_ artisticScale: Swift.Float = Float(1.0)) -> AlterCore.FaceTrackerReprojector
   public func fixedScaleReprojector(_ artisticScale: Swift.Float = Float(1.0)) -> AlterCore.FaceTrackerReprojector
+  public func fitAvatarIntoView(_ avatarData: AlterCore.AvatarAnimationData, _ artisticScale: Swift.Float = Float(1)) -> AlterCore.AvatarAnimationData
   public static func create(_ avatarRendererConfig: AlterCore.AvatarRendererConfig) -> AlterCore.Future<AlterCore.Try<AlterCore.AvatarRenderer>>
   public static func == (lhs: AlterCore.Avatar, rhs: AlterCore.Avatar) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
@@ -3755,9 +3522,6 @@ public protocol AvatarRenderer {
     get
   }
   public var avatarLoader: AlterCore.AvatarLoader {
-    get
-  }
-  public var device: AlterCore.Device {
     get
   }
   public func createEmptyAvatar() -> AlterCore.Future<AlterCore.Try<AlterCore.Avatar>>
@@ -3820,6 +3584,18 @@ public protocol AvatarRenderer {
   public var hashValue: Swift.Int {
     get
   }
+}
+public protocol AvatarController {
+  func frame() -> AlterCore.AvatarAnimationData?
+}
+@_hasMissingDesignatedInitializers public class AvatarControllerWrapper : AlterCore.ConvertibleToKotlin, AlterCore.AvatarController {
+  public var _wrappedAvatarController: Swift.AnyObject {
+    get
+  }
+  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
+  public func asKotlin() -> Swift.AnyObject
+  @objc deinit
+  public func frame() -> AlterCore.AvatarAnimationData?
 }
 @_hasMissingDesignatedInitializers public class FallbackAvatarController : AlterCore.ConvertibleToKotlin, Swift.Hashable, AlterCore.AvatarController {
   public var _wrappedAvatarController: Swift.AnyObject {
@@ -3925,7 +3701,31 @@ public protocol AvatarRenderer {
   @objc deinit
   public convenience init(_ definition: AlterCore.AvatarAnimationDefinition)
   public func frame() -> AlterCore.AvatarAnimationData?
+  public static func create(_ filePath: Swift.String, _ fileSystem: AlterCore.FileSystem) -> AlterCore.Future<AlterCore.Try<AlterCore.AnimatingAvatarController>>
   public static func == (lhs: AlterCore.AnimatingAvatarController, rhs: AlterCore.AnimatingAvatarController) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class RecordingAvatarController : AlterCore.ConvertibleToKotlin, Swift.Hashable, AlterCore.AvatarController {
+  public var _wrappedAvatarController: Swift.AnyObject {
+    get
+  }
+  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
+  public func asKotlin() -> Swift.AnyObject
+  @objc deinit
+  public convenience init(_ baseController: AlterCore.AvatarController)
+  public var baseController: AlterCore.AvatarController {
+    get
+  }
+  public func start(_ samplingIntervalSeconds: Swift.Float)
+  public func stop()
+  public func reset()
+  public func getAnimation(_ repeats: Swift.Int = 0, _ transitionSecondsToFirstFrame: Swift.Float? = nil) -> AlterCore.AvatarAnimationDefinition
+  public func save(_ filePath: Swift.String, _ fileSystem: AlterCore.WriteableFileSystem, _ repeats: Swift.Int = 0, _ transitionSecondsToFirstFrame: Swift.Float? = nil) -> AlterCore.Future<AlterCore.Try<Swift.Void>>
+  public func frame() -> AlterCore.AvatarAnimationData?
+  public static func == (lhs: AlterCore.RecordingAvatarController, rhs: AlterCore.RecordingAvatarController) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
     get
@@ -3947,6 +3747,65 @@ public protocol AvatarRenderer {
   public func scale(_ x: Swift.Float, _ y: Swift.Float)
   public func scale(_ delta: AlterCore.Vec2)
   public static func == (lhs: AlterCore.InteractiveAvatarController, rhs: AlterCore.InteractiveAvatarController) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class ViewportFitAvatarController : AlterCore.ConvertibleToKotlin, Swift.Hashable, AlterCore.AvatarController {
+  public var _wrappedAvatarController: Swift.AnyObject {
+    get
+  }
+  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
+  public func asKotlin() -> Swift.AnyObject
+  @objc deinit
+  public convenience init(_ baseController: AlterCore.AvatarController, _ renderer: AlterCore.AvatarRenderer, _ artisticScale: Swift.Float = Float(1))
+  public var artisticScale: Swift.Float {
+    get
+    set(newValue)
+  }
+  public var baseController: AlterCore.AvatarController {
+    get
+  }
+  public func frame() -> AlterCore.AvatarAnimationData?
+  public static func create(_ baseController: AlterCore.AvatarController, _ renderer: AlterCore.Future<AlterCore.Try<AlterCore.AvatarRenderer>>) -> AlterCore.Future<AlterCore.Try<AlterCore.ViewportFitAvatarController>>
+  public static func == (lhs: AlterCore.ViewportFitAvatarController, rhs: AlterCore.ViewportFitAvatarController) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class CameraTrackerController : AlterCore.ConvertibleToKotlin, Swift.Hashable, AlterCore.AvatarController {
+  public var _wrappedAvatarController: Swift.AnyObject {
+    get
+  }
+  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
+  public func asKotlin() -> Swift.AnyObject
+  @objc deinit
+  public convenience init(_ cameraWrapper: AlterCore.CameraWrapper, _ faceTracker: AlterCore.FaceTracker)
+  public var lastResult: AlterCore.FaceTrackerResult? {
+    get
+  }
+  public var frontFacing: Swift.Bool {
+    get
+    set(newValue)
+  }
+  public var cameraWrapper: AlterCore.CameraWrapper {
+    get
+  }
+  public var faceTracker: AlterCore.FaceTracker {
+    get
+  }
+  public func attachAvatar(_ avatar: AlterCore.AvatarRenderer)
+  public func start()
+  public func stop()
+  public func restart()
+  public func switchCamera()
+  public func isTracking() -> Swift.Bool
+  public func setOnFaceTrackedListener(_ onFaceTracked: @escaping (Swift.Bool) -> Swift.Void)
+  public func frame() -> AlterCore.AvatarAnimationData?
+  public static func create(_ avatarFactory: AlterCore.AvatarFactory) -> AlterCore.Future<AlterCore.Try<AlterCore.CameraTrackerController>>
+  public static func == (lhs: AlterCore.CameraTrackerController, rhs: AlterCore.CameraTrackerController) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
     get
@@ -4008,6 +3867,8 @@ public protocol AvatarViewInterface {
   var avatar: AlterCore.Avatar? { get set }
   var avatarController: AlterCore.AvatarController? { get set }
   func setOnFrameListener(_ onFrame: @escaping (Swift.Float) -> Swift.Void)
+  func pauseRendering(_ onRenderingFinished: (() -> Swift.Void)?)
+  func resumeRendering()
 }
 @_hasMissingDesignatedInitializers public class AvatarViewInterfaceWrapper : AlterCore.ConvertibleToKotlin, AlterCore.AvatarViewInterface {
   public var _wrappedAvatarViewInterface: Swift.AnyObject {
@@ -4025,6 +3886,8 @@ public protocol AvatarViewInterface {
     set(newValue)
   }
   public func setOnFrameListener(_ onFrame: @escaping (Swift.Float) -> Swift.Void)
+  public func pauseRendering(_ onRenderingFinished: (() -> Swift.Void)?)
+  public func resumeRendering()
 }
 @_hasMissingDesignatedInitializers public class AnimationDefinition : AlterCore.ConvertibleToKotlin, Swift.Hashable {
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
@@ -4050,7 +3913,7 @@ public protocol AvatarViewInterface {
     get
   }
 }
-@_hasMissingDesignatedInitializers public class AvatarAnimationFrame : AlterCore.ConvertibleToKotlin, Swift.Hashable {
+@_hasMissingDesignatedInitializers public class AvatarAnimationFrame : AlterCore.ConvertibleToKotlin, Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
   public func asKotlin() -> Swift.AnyObject
   @objc deinit
@@ -4064,14 +3927,26 @@ public protocol AvatarViewInterface {
   public var transform: AlterCore.TransformDefinition {
     get
   }
+  public func isEqual(_ other: Any?) -> Swift.Bool
+  public func hash() -> Swift.UInt
+  public func component1() -> Swift.Float
+  public func component2() -> [Swift.String : Swift.Float]
+  public func component3() -> AlterCore.TransformDefinition
+  public func doCopy(_ timeSeconds: Swift.Float, _ blendshapes: [Swift.String : Swift.Float] = [:], _ transform: AlterCore.TransformDefinition = TransformDefinition()) -> AlterCore.AvatarAnimationFrame
   public static func serializer<TKotlinx_serialization_coreKSerializer>() -> TKotlinx_serialization_coreKSerializer where TKotlinx_serialization_coreKSerializer : AlterCore.Kotlinx_serialization_coreKSerializer, TKotlinx_serialization_coreKSerializer.T == AlterCore.AvatarAnimationFrame
   public static func == (lhs: AlterCore.AvatarAnimationFrame, rhs: AlterCore.AvatarAnimationFrame) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
   public var hashValue: Swift.Int {
     get
   }
 }
-@_hasMissingDesignatedInitializers public class AvatarAnimationDefinition : AlterCore.ConvertibleToKotlin, Swift.Hashable {
+@_hasMissingDesignatedInitializers public class AvatarAnimationDefinition : AlterCore.ConvertibleToKotlin, Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
   public func asKotlin() -> Swift.AnyObject
   @objc deinit
@@ -4085,9 +3960,21 @@ public protocol AvatarViewInterface {
   public var frames: [AlterCore.AvatarAnimationFrame] {
     get
   }
+  public func isEqual(_ other: Any?) -> Swift.Bool
+  public func hash() -> Swift.UInt
+  public func component1() -> Swift.Int
+  public func component2() -> Swift.Bool
+  public func component3() -> [AlterCore.AvatarAnimationFrame]
+  public func doCopy(_ repeats: Swift.Int = 0, _ timesAreCumulative: Swift.Bool = false, _ frames: [AlterCore.AvatarAnimationFrame] = []) -> AlterCore.AvatarAnimationDefinition
   public static func serializer<TKotlinx_serialization_coreKSerializer>() -> TKotlinx_serialization_coreKSerializer where TKotlinx_serialization_coreKSerializer : AlterCore.Kotlinx_serialization_coreKSerializer, TKotlinx_serialization_coreKSerializer.T == AlterCore.AvatarAnimationDefinition
   public static func == (lhs: AlterCore.AvatarAnimationDefinition, rhs: AlterCore.AvatarAnimationDefinition) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
   public var hashValue: Swift.Int {
     get
   }
@@ -4120,10 +4007,10 @@ public protocol AvatarViewInterface {
   public func component4() -> [Swift.String : Swift.Float]
   public func component5() -> [Swift.String : Swift.Float]
   public func doCopy(_ name: Swift.String? = nil, _ items: [AlterCore.ItemReferenceDefinition] = [], _ blendshapes: [Swift.String : Swift.Float] = [:], _ boneBlenderPresetWeights: [Swift.String : Swift.Float] = [:], _ boneBlenderWeights: [Swift.String : Swift.Float] = [:]) -> AlterCore.AvatarMatrix
+  public func toJson() -> Swift.String
+  public func addItem(_ item: AlterCore.ItemReferenceDefinition) -> AlterCore.AvatarMatrix
   public func addBoneBlenderWeights(_ boneBlenderWeights: [Swift.String : Swift.Float]) -> AlterCore.AvatarMatrix
   public func addBoneBlenderPresetWeights(_ boneBlenderPresetWeights: [Swift.String : Swift.Float]) -> AlterCore.AvatarMatrix
-  public func boneBlenders(_ fileSystem: AlterCore.FileSystem, _ itemRange: AlterCore.KotlinIntRange) -> AlterCore.Future<AlterCore.Try<Swift.Set<Swift.String>>>
-  public func toJson() -> Swift.String
   public static func serializer<TKotlinx_serialization_coreKSerializer>() -> TKotlinx_serialization_coreKSerializer where TKotlinx_serialization_coreKSerializer : AlterCore.Kotlinx_serialization_coreKSerializer, TKotlinx_serialization_coreKSerializer.T == AlterCore.AvatarMatrix
   public static func == (lhs: AlterCore.AvatarMatrix, rhs: AlterCore.AvatarMatrix) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
@@ -5426,6 +5313,49 @@ public protocol TickerMapper {
   public static func == (lhs: AlterCore.KotlinException, rhs: AlterCore.KotlinException) -> Swift.Bool
   override public func hash(into hasher: inout Swift.Hasher)
 }
+public protocol KotlinCEnum {
+  var value: Any { get }
+}
+@_hasMissingDesignatedInitializers public class KotlinCEnumWrapper : AlterCore.ConvertibleToKotlin, AlterCore.KotlinCEnum {
+  public var _wrappedKotlinCEnum: Swift.AnyObject {
+    get
+  }
+  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
+  public func asKotlin() -> Swift.AnyObject
+  @objc deinit
+  public var value: Any {
+    get
+  }
+}
+public enum UIKUIDeviceOrientation : Swift.CustomStringConvertible, AlterCore.ConvertibleToKotlin, Swift.CustomDebugStringConvertible {
+  case uideviceorientationunknown
+  case uideviceorientationportrait
+  case uideviceorientationportraitupsidedown
+  case uideviceorientationlandscapeleft
+  case uideviceorientationlandscaperight
+  case uideviceorientationfaceup
+  case uideviceorientationfacedown
+  public var value: Swift.Int64 {
+    get
+  }
+  public var ordinal: Swift.Int {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
+  public init(_ wrapped: AlterCore.KotlinObjectWrapper)
+  public func asKotlin() -> Swift.AnyObject
+  public static func == (a: AlterCore.UIKUIDeviceOrientation, b: AlterCore.UIKUIDeviceOrientation) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public typealias UIDeviceOrientation = AlterCore.UIKUIDeviceOrientation
 @_hasMissingDesignatedInitializers public class KotlinByteArray : AlterCore.ConvertibleToKotlin, Swift.Hashable {
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
   public func asKotlin() -> Swift.AnyObject
@@ -5591,84 +5521,6 @@ public protocol KotlinIterator {
   @objc deinit
   public func hasNext() -> Swift.Bool
   public func next() -> T
-}
-@_hasMissingDesignatedInitializers public class KotlinIntProgression : AlterCore.ConvertibleToKotlin, Swift.Hashable, Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public var first: Swift.Int {
-    get
-  }
-  public var last: Swift.Int {
-    get
-  }
-  public var step: Swift.Int {
-    get
-  }
-  public func isEqual(_ other: Any?) -> Swift.Bool
-  public func hash() -> Swift.UInt
-  public func isEmpty() -> Swift.Bool
-  public func iterator() -> AlterCore.KotlinIntIterator
-  public static func == (lhs: AlterCore.KotlinIntProgression, rhs: AlterCore.KotlinIntProgression) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var description: Swift.String {
-    get
-  }
-  public var debugDescription: Swift.String {
-    get
-  }
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-public protocol KotlinClosedRange {
-  associatedtype T : AlterCore.KotlinComparable
-  var endInclusive: Self.T { get }
-  var start: Self.T { get }
-  func contains(_ value: Self.T) -> Swift.Bool
-  func isEmpty() -> Swift.Bool
-}
-@_hasMissingDesignatedInitializers public class KotlinClosedRangeWrapper<T> : AlterCore.ConvertibleToKotlin, AlterCore.KotlinClosedRange where T : AlterCore.KotlinComparable {
-  public typealias T = T
-  public var _wrappedKotlinClosedRange: Swift.AnyObject {
-    get
-  }
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public var endInclusive: T {
-    get
-  }
-  public var start: T {
-    get
-  }
-  public func contains(_ value: T) -> Swift.Bool
-  public func isEmpty() -> Swift.Bool
-}
-@_hasMissingDesignatedInitializers public class KotlinIntRange : AlterCore.KotlinIntProgression, AlterCore.KotlinClosedRange {
-  public typealias T = Swift.Int
-  public var _wrappedKotlinClosedRange: Swift.AnyObject {
-    get
-  }
-  required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
-  override public func asKotlin() -> Swift.AnyObject
-  @objc deinit
-  public convenience init(_ start: Swift.Int, _ endInclusive: Swift.Int)
-  public var endInclusive: Swift.Int {
-    get
-  }
-  public var start: Swift.Int {
-    get
-  }
-  public func contains(_ value: AlterCore.KotlinIntRange.T) -> Swift.Bool
-  public static func == (lhs: AlterCore.KotlinIntRange, rhs: AlterCore.KotlinIntRange) -> Swift.Bool
-  override public func hash(into hasher: inout Swift.Hasher)
-  override public var description: Swift.String {
-    get
-  }
-  override public var debugDescription: Swift.String {
-    get
-  }
 }
 @_hasMissingDesignatedInitializers public class KotlinDoubleArray : AlterCore.ConvertibleToKotlin, Swift.Hashable {
   required public convenience init(_ wrapped: AlterCore.KotlinObjectWrapper)
@@ -6227,7 +6079,6 @@ extension AlterCore.FaceTrackerResult : Swift.Hashable {}
 extension AlterCore.FaceTrackerWithResult : Swift.Hashable {}
 extension AlterCore.FaceTrackerReprojectorResult : Swift.Hashable {}
 extension AlterCore.Path : Swift.Hashable {}
-extension AlterCore.ThumbnailConfigDefinition : Swift.Hashable {}
 extension AlterCore.AvatarPresetDefinition : Swift.Hashable {}
 extension AlterCore.ItemSelectionDefinition : Swift.Hashable {}
 extension AlterCore.SelectionsDefinition : Swift.Hashable {}
@@ -6247,6 +6098,8 @@ extension AlterCore.ItemVariantMetadataDefinition : Swift.Hashable {}
 extension AlterCore.ItemMetadataDefinition : Swift.Hashable {}
 extension AlterCore.LocaleDefinition : Swift.Hashable {}
 extension AlterCore.AvatarAnimationData : Swift.Hashable {}
+extension AlterCore.AvatarAnimationFrame : Swift.Hashable {}
+extension AlterCore.AvatarAnimationDefinition : Swift.Hashable {}
 extension AlterCore.AvatarMatrix : Swift.Hashable {}
 extension AlterCore.BlendshapeBoneConversionDefinition : Swift.Hashable {}
 extension AlterCore.BoneAdjustmentDefinition : Swift.Hashable {}
