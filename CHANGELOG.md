@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.14.2 - 2022-05-23
+### Changed
+- Updated default data URL to a new version
+
 ## 0.14.1 - 2022-05-23
 ### Fixed
 - Wrong paths in Swift PM dependencies
