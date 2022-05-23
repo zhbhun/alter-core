@@ -7,13 +7,13 @@
 </h1>
 
 
-Core by [Alter](https://alter.xyz) is a cross-platform SDK consisting of a real-time 3D avatar system and [facial motion capture](https://github.com/facemoji/mocap4face) built from scratch for web3 interoperability and the open metaverse. Easily pipe avatars into your game, app or website. It just works. Check out the included code samples to learn how to get started. [Try the live demo](https://alter.xyz).
+Core by [Alter](https://alter.xyz) is a cross-platform core tech and an SDK powering [Alter SDK](https://github.com/facemoji/alter-sdk) and consisting of a real-time 3D avatar system and [facial motion capture](https://github.com/facemoji/mocap4face). It's built from scratch for web3 interoperability and the open metaverse. Easily pipe avatars into your game, app or website. It just works. Check out the included code samples to learn how to get started. [Try live web demo](https://alter.xyz) or [TestFlight](https://testflight.apple.com/join/1n5BT44q).
 
 Please star us ⭐⭐⭐ on GitHub—it motivates us a lot!
 # 📋 Table of Content
 
 - [Tech Specs](#-tech-specs)
-- [Motion Capture](#-facial-motion-capture)
+- [Motion Capture](#-motion-capture)
 - [Installation](#-installation)
 - [License](#-license)
 - [Use Cases](#-use-cases)
@@ -24,26 +24,14 @@ Please star us ⭐⭐⭐ on GitHub—it motivates us a lot!
 ### 🚉 Supported Platforms
 
 - iOS 13+
+- - [TestFlight demo](https://testflight.apple.com/join/1n5BT44q)
 - Android 8+
 - WebGL 2
-- macOS (WIP)
-- Windows (WIP)
+- - [Web demo](https://alter.xyz)
+- macOS (Soon)
+- Windows (Soon)
 - Unity (Soon)
 - Unreal (Soon)
-
-### ✨ Avatar Formats
-
-- Head only
-- A bust with clothing
-- Accessories only (for e.g. AR filters) (Soon)
-- Full body (Soon)
-
-### 🌈 Variability
-
-- Human and non-human
-- From toddler to skeleton
-- Genders and non-binary
-- Full range of diversity
 
 # 🤪 Motion Capture
 
@@ -56,7 +44,7 @@ Please star us ⭐⭐⭐ on GitHub—it motivates us a lot!
 - [3D reprojection to input photo/video](https://studio.facemoji.co/docs/Re-projecting-3D-Faces-for-Augmented-Reality_a2d9e35a-3d9a-4fd1-b58a-51db06139d4d)
 - Platform-suited API and packaging with internal optimizations
 - Simultaneous back and front camera support
-- Light & fast, just `3MB` ML model size
+- Powered by [mocap4face](https://github.com/facemoji/mocap4face)
 
 ### 🤳 Input
 
@@ -80,19 +68,12 @@ Please star us ⭐⭐⭐ on GitHub—it motivates us a lot!
 - `60 FPS` on iPhone SE (1st gen)
 - `90 FPS` on iPhone X or newer
 
-### 💡 More information
-If you only need the facial tracking technology, check out our [mocap4face](https://github.com/facemoji/mocap4face) repository!
-
 # 💿 Installation
-
-
 
 ## Prerequisites
 Register in [Alter Studio](https://studio.alter.xyz) to get a unique key to access avatar data from our servers.
 
 See our example code to see where to put the key. Look for "YOUR-API-KEY-HERE".
-
-
 
 ## iOS
 
@@ -178,8 +159,9 @@ This is an alpha release software—we are still ironing out bugs, adding new fe
 
 # ❤️ Links
 
-- [Twitter](https://twitter.com/alterz)
+- [Twitter](https://twitter.com/alter)
 - [Discord](https://discord.gg/alterz)
 - [LinkedIn](https://www.linkedin.com/company/alterxyz/)
 - [Blog](https://medium.com/@alterz/announcing-our-intentions-to-open-source-our-core-tech-62e7a87ce5be)
+- [Avatar Designer TestFlight](https://testflight.apple.com/join/1n5BT44q)
 - [Learn more...](https://alter.xyz)
