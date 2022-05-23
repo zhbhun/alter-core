@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.14.1 - 2022-05-23
+### Fixed
+- Wrong paths in Swift PM dependencies
+
 ## 0.14.0 - 2022-05-22
 ### Added
 - CameraTrackerController that connects CameraWrapper and TrackerAvatarController in one convenient object
