@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.14.3 - 2022-05-23
+### Fixed
+- Cached files getting occasionally corrupted on iOS
+
 ## 0.14.2 - 2022-05-23
 ### Changed
 - Updated default data URL to a new version

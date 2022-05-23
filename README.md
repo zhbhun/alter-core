@@ -83,6 +83,8 @@ Register in [Alter Studio](https://studio.alter.xyz) to get a unique key to acce
 
 See our example code to see where to put the key. Look for "YOUR-API-KEY-HERE".
 
+
+
 ## iOS
 
 To run the example, simply open the attached Xcode project and run it on your iPhone or iPad.
@@ -116,7 +118,7 @@ repositories {
 
 // ...
 dependencies {
-    implementation "alter:alter-core:0.14.2"
+    implementation "alter:alter-core:0.14.3"
 }
 ```
 
@@ -130,7 +132,7 @@ Do not forget to get your API key at [studio.alter.xyz](https://studio.alter.xyz
 
 Install the dependency via `npm` or `yarn` command.
 ```
-npm install @0xalter/alter-core@0.14.2
+npm install @0xalter/alter-core@0.14.3
 ```
 
 If you are using a bundler (such as Webpack), make sure to copy the assets from `@0xalter/alter-core` to your serving directory.
