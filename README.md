@@ -33,6 +33,14 @@ Please star us ⭐⭐⭐ on GitHub—it motivates us a lot!
 - Unity (Soon)
 - Unreal (Soon)
 
+### ✨ Avatar Formats
+
+- Head only
+- A bust with clothing
+- A bust with clothing and background (Soon)
+- Accessories only (for e.g. AR filters) (Soon)
+- Full body (Soon)
+
 # 🤪 Motion Capture
 
 ### ✨ Features
