@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.14.4 - 2022-05-29
+### Fixed
+- Transparent background not working properly on iOS
+- Crash when CameraWrapper was used from multiple threads on iOS
+- deviceId parameter in CameraWrapper.start being ignored on JS
+
 ## 0.14.3 - 2022-05-23
 ### Fixed
 - Cached files getting occasionally corrupted on iOS

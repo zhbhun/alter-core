@@ -16,9 +16,6 @@ import UIKit
 import VideoToolbox
 import _Concurrency
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class AvatarView : AlterCore.BasicRendererView, AlterCore.AvatarViewInterface {
-  @_Concurrency.MainActor(unsafe) public var _wrappedAvatarViewInterface: Swift.AnyObject {
-    get
-  }
   @_Concurrency.MainActor(unsafe) public var avatar: AlterCore.Avatar?
   @_Concurrency.MainActor(unsafe) public var avatarController: AlterCore.AvatarController?
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
@@ -1487,6 +1484,8 @@ extension AlterCore.ImageCube {
   }
   @discardableResult
   public func start(_ frontFacing: Swift.Bool) -> AlterCore.Future<AlterCore.Try<Swift.Void>>
+  @discardableResult
+  public func start() -> AlterCore.Future<AlterCore.Try<Swift.Void>>
   public func addOnFrameListener(_ listener: @escaping (AlterCore.TrackerImage) -> Swift.Void)
   public func changeOrientation(_ newOrientation: AlterCore.UIKUIDeviceOrientation? = nil)
   public func toggleFlash() -> AlterCore.Try<Swift.Void>
