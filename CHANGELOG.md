@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.14.5 - 2022-06-07
+### Fixed
+- Prefer front-facing cameras on JS when frontFacing is set to true in CameraWrapper
+- Better conflict resolution in avatar designer logic
+
 ## 0.14.4 - 2022-05-29
 ### Fixed
 - Transparent background not working properly on iOS
