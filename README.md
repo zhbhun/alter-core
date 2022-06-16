@@ -143,6 +143,8 @@ See [our Webpack config](js-example/webpack.config.common.js#L33) for an example
 
 This library is provided under the [Alter SDK License Agreement](LICENSE.md). The sample code in this repository is provided under the [Alter Samples License](ios-example/LICENSE.md).
 
+This library uses open source software, see the list of our [OSS dependencies and license notices](license/README.md).
+
 # 🚀 Use Cases
 
 Any app or game experience that uses an avatar as a profile picture or for character animations. The only limit is your imagination.
