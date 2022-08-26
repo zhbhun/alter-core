@@ -33,16 +33,8 @@ struct FragmentUniforms {
     #ifndef COLOR_TEXTURE
         float4 color;
     #endif
-    #ifndef ROUGHNESS_TEXTURE
-        float roughness;
-    #endif
-    #ifndef METALNESS_TEXTURE
-        float metalness;
-    #endif
-    #ifdef TRANSPARENCY
-        #ifndef TRANSPARENCY_TEXTURE
-            float transparency;
-        #endif
+    #ifndef PACKEDRMT_TEXTURE
+        float4 packedRMT;
     #endif
     float brightness;
     #ifdef ENVIRONMENT_TEXTURE
@@ -65,17 +57,9 @@ fragment FragmentOut fragmentMain(
         ,texture2d<half> colorTexture,
         sampler colorTextureSampler
     #endif
-    #ifdef ROUGHNESS_TEXTURE
-        ,texture2d<half> roughnessTexture,
-        sampler roughnessTextureSampler
-    #endif
-    #ifdef METALNESS_TEXTURE
-        ,texture2d<half> metalnessTexture,
-        sampler metalnessTextureSampler
-    #endif
-    #ifdef TRANSPARENCY_TEXTURE
-        ,texture2d<half> transparencyTexture,
-        sampler transparencyTextureSampler
+    #ifdef PACKEDRMT_TEXTURE
+        ,texture2d<half> packedRMTTexture,
+        sampler packedRMTTextureSampler
     #endif
     #ifdef ENVIRONMENT_TEXTURE
         ,texture2d<half> environmentTexture,
@@ -97,40 +81,23 @@ fragment FragmentOut fragmentMain(
     half4 color = half4(uniforms.color);
     #endif
 
-    #ifdef ROUGHNESS_TEXTURE
-    half roughness =  roughnessTexture.sample(roughnessTextureSampler, interpolate.colorCoord).r;
-    #ifdef ROUGHNESS_TEXTURE_INVERT
-    roughness = 1.0h - roughness;
+    #ifdef PACKEDRMT_TEXTURE
+    half4 packedRMT =  packedRMTTexture.sample(packedRMTTextureSampler, interpolate.colorCoord);
+    #ifdef PACKEDRMT_TEXTURE_INVERT
+    packedRMT = half4(1.0h) - packedRMT;
     #endif
     #else
-    half roughness = half(uniforms.roughness);
-    #endif
-
-    #ifdef METALNESS_TEXTURE
-    half metalness =  metalnessTexture.sample(metalnessTextureSampler, interpolate.colorCoord).r;
-    #ifdef METALNESS_TEXTURE_INVERT
-    metalness = 1.0h - metalness;
-    #endif
-    #else
-    half metalness = half(uniforms.metalness);
-    #endif
-
-    #ifdef TRANSPARENCY
-    #ifdef TRANSPARENCY_TEXTURE
-    half transparency =  transparencyTexture.sample(transparencyTextureSampler, interpolate.colorCoord).r;
-    #ifdef TRANSPARENCY_TEXTURE_INVERT
-    transparency = 1.0h - transparency;
-    #endif
-    #else
-    half transparency = half(uniforms.transparency);
-    #endif
+    half4 packedRMT = half4(uniforms.packedRMT);
     #endif
 
     half3 col = color.rgb * (1.0h + half(uniforms.brightness));
-    half alpha = 1.0h;
 
+    half roughness = packedRMT.r;
+    half metalness = packedRMT.g;
+
+    half alpha = 1.0h;
     #ifdef TRANSPARENCY
-    alpha = 1.0h - transparency;
+    alpha = 1.0h - packedRMT.b;
     #endif
 
     #ifdef INST_COLOR

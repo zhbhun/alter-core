@@ -118,7 +118,7 @@ repositories {
 
 // ...
 dependencies {
-    implementation "alter:alter-core:0.14.5"
+    implementation "alter:alter-core:0.15.0"
 }
 ```
 
@@ -132,7 +132,7 @@ Do not forget to get your API key at [studio.alter.xyz](https://studio.alter.xyz
 
 Install the dependency via `npm` or `yarn` command.
 ```
-npm install @0xalter/alter-core@0.14.5
+npm install @0xalter/alter-core@0.15.0
 ```
 
 If you are using a bundler (such as Webpack), make sure to copy the assets from `@0xalter/alter-core` to your serving directory.

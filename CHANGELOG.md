@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.15.0 - 2022-08-25
+### Changed
+- BREAKING: Added OpenCL shader caching to Android GPU models. Because of this `createVideoTracker` and `createImageTracker` now requires an activity context to access cache directories.
+- Updated Kotlin to 1.7.20 which brings performance and memory improvements
+
+### Fixed
+- Memory leaks on iOS
+
+### Improved
+- New structure of flat3d for faster loading time 
+- Designer logic more robust
+- Better fit in ViewportFitAvatarController
+- Performance improvements for iOS and Javascript platforms
+
 ## 0.14.5 - 2022-06-07
 ### Fixed
 - Prefer front-facing cameras on JS when frontFacing is set to true in CameraWrapper
