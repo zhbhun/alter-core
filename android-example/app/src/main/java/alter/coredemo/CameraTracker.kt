@@ -78,7 +78,7 @@ class CameraTracker private constructor(
             val cameraWrapper = CameraWrapper(avatarFactory.context)
             return FaceTracker.createVideoTracker(
                 avatarFactory.bundledFileSystem,
-                cameraWrapper.openglContext
+                TrackerGPUContext(cameraWrapper.openglContext, avatarFactory.context)
             ).mapTry {
                 CameraTracker(cameraWrapper, it)
             }
