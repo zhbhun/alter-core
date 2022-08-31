@@ -1,7 +1,13 @@
 <h1 align="center">
-  <br>
-  <img src="https://user-images.githubusercontent.com/130319/151848890-9bc3dcae-eeac-47af-bda3-e2d72b20fe3a.png" alt="Core by Alter" width="100%"></a>
-  <br>
+  DISCONTINUED!
+</h1>
+Due to changes on the horizon, we’ve disabled new API keys generation in the Alter Studio. This means we are pausing new partner signups. Existing partners will have access to the assets SDK until August 31, 2022 after which access will be discontinued.
+
+We apologize for any interruptions to your development.
+
+As always, we are grateful for your trust and support.
+
+<h1 align="center">
   Core by <a href="https://alter.xyz">Alter</a>
   <br>
 </h1>
